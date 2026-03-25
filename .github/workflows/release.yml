@@ -1,0 +1,99 @@
+name: Build & Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            target: x86_64-pc-windows-msvc
+            sidecar_ext: .exe
+          - os: macos-latest
+            target: x86_64-apple-darwin
+            sidecar_ext: ""
+          - os: macos-latest
+            target: aarch64-apple-darwin
+            sidecar_ext: ""
+          - os: ubuntu-22.04
+            target: x86_64-unknown-linux-gnu
+            sidecar_ext: ""
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # --- Python backend ---
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Python dependencies
+        run: |
+          pip install pyinstaller
+          pip install -r python/requirements.txt
+
+      - name: Build Python sidecar
+        run: |
+          cd python
+          pyinstaller deskbutler-engine.spec
+
+      - name: Copy sidecar binary
+        shell: bash
+        run: |
+          SRC="python/dist/deskbutler-engine${{ matrix.sidecar_ext }}"
+          DST="src-tauri/binaries/deskbutler-engine-${{ matrix.target }}${{ matrix.sidecar_ext }}"
+          cp "$SRC" "$DST"
+          chmod +x "$DST" 2>/dev/null || true
+
+      # --- Node frontend ---
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      # --- Rust + Tauri ---
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+
+      - name: Install Linux dependencies
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libwebkit2gtk-4.0-dev \
+            libappindicator3-dev \
+            librsvg2-dev \
+            patchelf
+
+      - name: Build Tauri app
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: ${{ github.ref_name }}
+          releaseName: "DeskButler ${{ github.ref_name }}"
+          releaseBody: |
+            ## DeskButler ${{ github.ref_name }}
+
+            Download the installer for your platform below.
+
+            ### What's included
+            - Smart file organization with AI classification
+            - Folder watching with real-time detection
+            - Suggestion-first workflow (files never moved without approval)
+            - Full move history with one-click undo
+          releaseDraft: true
+          prerelease: false
+          args: --target ${{ matrix.target }}

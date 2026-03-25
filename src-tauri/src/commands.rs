@@ -116,3 +116,18 @@ pub async fn add_rule(name: String, condition: String, destination: String) -> R
 pub async fn delete_rule(id: String) -> Result<String, String> {
     api_post("/rules/delete", serde_json::json!({ "id": id })).await
 }
+
+#[tauri::command]
+pub async fn get_settings() -> Result<String, String> {
+    api_get("/settings").await
+}
+
+#[tauri::command]
+pub async fn save_settings(settings: serde_json::Value) -> Result<String, String> {
+    api_post("/settings", settings).await
+}
+
+#[tauri::command]
+pub async fn check_backend() -> Result<String, String> {
+    api_get("/health").await
+}

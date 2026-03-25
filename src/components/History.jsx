@@ -3,11 +3,14 @@ import { getHistory, undoMove } from "../utils/tauri";
 
 export default function History() {
   const [history, setHistory] = useState([]);
+  const [error, setError] = useState(null);
 
   const load = async () => {
     try {
       setHistory(await getHistory());
+      setError(null);
     } catch {
+      setError("Could not load history from backend.");
       setHistory([]);
     }
   };
@@ -15,8 +18,12 @@ export default function History() {
   useEffect(() => { load(); }, []);
 
   const handleUndo = async (id) => {
-    await undoMove(id);
-    load();
+    try {
+      await undoMove(id);
+      await load();
+    } catch {
+      setError("Failed to undo move.");
+    }
   };
 
   return (
@@ -24,7 +31,9 @@ export default function History() {
       <h1>History</h1>
       <p className="subtitle">Everything DeskButler has moved, with undo.</p>
 
-      {history.length === 0 ? (
+      {error && <div className="error-banner">{error}</div>}
+
+      {history.length === 0 && !error ? (
         <p className="muted">Nothing moved yet.</p>
       ) : (
         <ul className="history-list">

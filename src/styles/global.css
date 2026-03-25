@@ -281,3 +281,35 @@ input[type="text"]:focus {
   padding: 48px;
   color: var(--text-muted);
 }
+
+/* Banners */
+.error-banner {
+  background: rgba(224, 82, 82, 0.15);
+  border: 1px solid var(--danger);
+  color: var(--danger);
+  padding: 10px 16px;
+  border-radius: 6px;
+  margin-bottom: 16px;
+  font-size: 0.9rem;
+}
+
+.success-banner {
+  background: rgba(46, 204, 113, 0.15);
+  border: 1px solid var(--success);
+  color: var(--success);
+  padding: 10px 16px;
+  border-radius: 6px;
+  margin-bottom: 16px;
+  font-size: 0.9rem;
+}
+
+/* Settings input */
+.setting-input {
+  width: 160px;
+  flex: none !important;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

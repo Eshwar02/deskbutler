@@ -2,9 +2,10 @@
 
 import sqlite3
 import uuid
+import os
 from datetime import datetime
 
-DB_PATH = "deskbutler.db"
+DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "deskbutler.db")
 
 
 class HistoryDB:
@@ -34,8 +35,14 @@ class HistoryDB:
                 destination TEXT,
                 enabled INTEGER DEFAULT 1
             );
+            CREATE TABLE IF NOT EXISTS settings (
+                key TEXT PRIMARY KEY,
+                value TEXT
+            );
         """)
         self.conn.commit()
+
+    # --- History ---
 
     def record_move(self, suggestion):
         self.conn.execute(
@@ -57,6 +64,8 @@ class HistoryDB:
         self.conn.execute("UPDATE history SET undone = 1 WHERE id = ?", (move_id,))
         self.conn.commit()
 
+    # --- Watched folders ---
+
     def get_watched_folders(self):
         rows = self.conn.execute("SELECT * FROM watched_folders").fetchall()
         return [dict(r) for r in rows]
@@ -68,6 +77,8 @@ class HistoryDB:
     def remove_watched_folder(self, path):
         self.conn.execute("DELETE FROM watched_folders WHERE path = ?", (path,))
         self.conn.commit()
+
+    # --- Rules ---
 
     def get_rules(self):
         rows = self.conn.execute("SELECT * FROM rules").fetchall()
@@ -83,3 +94,20 @@ class HistoryDB:
     def delete_rule(self, rule_id):
         self.conn.execute("DELETE FROM rules WHERE id = ?", (rule_id,))
         self.conn.commit()
+
+    # --- Settings ---
+
+    def get_settings(self):
+        rows = self.conn.execute("SELECT * FROM settings").fetchall()
+        return {r["key"]: r["value"] for r in rows}
+
+    def set_setting(self, key, value):
+        self.conn.execute(
+            "INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)",
+            (key, str(value)),
+        )
+        self.conn.commit()
+
+    def get_setting(self, key, default=None):
+        row = self.conn.execute("SELECT value FROM settings WHERE key = ?", (key,)).fetchone()
+        return row["value"] if row else default

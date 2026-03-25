@@ -6,11 +6,14 @@ export default function RuleBuilder() {
   const [name, setName] = useState("");
   const [condition, setCondition] = useState("");
   const [destination, setDestination] = useState("");
+  const [error, setError] = useState(null);
 
   const load = async () => {
     try {
       setRules(await getRules());
+      setError(null);
     } catch {
+      setError("Could not load rules from backend.");
       setRules([]);
     }
   };
@@ -19,22 +22,33 @@ export default function RuleBuilder() {
 
   const handleAdd = async () => {
     if (!name.trim() || !condition.trim() || !destination.trim()) return;
-    await addRule(name.trim(), condition.trim(), destination.trim());
-    setName("");
-    setCondition("");
-    setDestination("");
-    load();
+    setError(null);
+    try {
+      await addRule(name.trim(), condition.trim(), destination.trim());
+      setName("");
+      setCondition("");
+      setDestination("");
+      await load();
+    } catch {
+      setError("Failed to add rule.");
+    }
   };
 
   const handleDelete = async (id) => {
-    await deleteRule(id);
-    load();
+    try {
+      await deleteRule(id);
+      await load();
+    } catch {
+      setError("Failed to delete rule.");
+    }
   };
 
   return (
     <div className="page">
       <h1>Rules</h1>
       <p className="subtitle">Tell DeskButler how you like things organized.</p>
+
+      {error && <div className="error-banner">{error}</div>}
 
       <div className="rule-form">
         <input placeholder="Rule name, e.g. PDFs to Documents" value={name} onChange={(e) => setName(e.target.value)} />
@@ -55,7 +69,7 @@ export default function RuleBuilder() {
         ))}
       </ul>
 
-      {rules.length === 0 && (
+      {rules.length === 0 && !error && (
         <p className="muted">No rules yet. Add one above to teach DeskButler your preferences.</p>
       )}
     </div>

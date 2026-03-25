@@ -12,22 +12,43 @@
   "tauri": {
     "allowlist": {
       "all": false,
-      "shell": { "open": true },
+      "shell": {
+        "open": true,
+        "sidecar": true,
+        "scope": [
+          {
+            "name": "binaries/deskbutler-engine",
+            "sidecar": true
+          }
+        ]
+      },
       "dialog": { "all": true },
       "fs": { "all": true, "scope": ["**"] }
     },
     "bundle": {
       "active": true,
       "identifier": "com.deskbutler.app",
+      "externalBin": ["binaries/deskbutler-engine"],
       "icon": [
         "icons/32x32.png",
         "icons/128x128.png",
         "icons/icon.ico"
-      ]
+      ],
+      "windows": {
+        "wix": {
+          "language": "en-US"
+        },
+        "nsis": {
+          "installMode": "currentUser"
+        }
+      }
     },
     "systemTray": {
       "iconPath": "icons/32x32.png",
       "iconAsTemplate": true
+    },
+    "updater": {
+      "active": false
     },
     "windows": [
       {
@@ -36,7 +57,8 @@
         "height": 700,
         "resizable": true,
         "fullscreen": false,
-        "center": true
+        "center": true,
+        "decorations": true
       }
     ]
   }

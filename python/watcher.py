@@ -1,5 +1,6 @@
 """Folder watcher using watchdog."""
 
+import time
 import threading
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
@@ -11,14 +12,32 @@ class NewFileHandler(FileSystemEventHandler):
 
     def on_created(self, event):
         if not event.is_directory:
-            self.on_new_file(event.src_path)
+            # Small delay to let file finish writing
+            time.sleep(0.5)
+            try:
+                self.on_new_file(event.src_path)
+            except Exception:
+                pass
 
     def on_moved(self, event):
         if not event.is_directory:
-            self.on_new_file(event.dest_path)
+            try:
+                self.on_new_file(event.dest_path)
+            except Exception:
+                pass
 
 
 _observer = Observer()
+_started = False
+
+
+def _ensure_started():
+    """Ensure the observer thread is running."""
+    global _started
+    if not _started:
+        _observer.daemon = True
+        _observer.start()
+        _started = True
 
 
 def start_watching(folders=None, on_new_file=None):
@@ -32,8 +51,7 @@ def start_watching(folders=None, on_new_file=None):
     for folder in folders:
         _observer.schedule(handler, folder, recursive=False)
 
-    thread = threading.Thread(target=_observer.start, daemon=True)
-    thread.start()
+    _ensure_started()
 
 
 def stop_watching():
@@ -42,5 +60,7 @@ def stop_watching():
 
 
 def add_folder(folder, on_new_file):
+    """Add a new folder to watch. Starts observer if not running."""
     handler = NewFileHandler(on_new_file)
     _observer.schedule(handler, folder, recursive=False)
+    _ensure_started()
