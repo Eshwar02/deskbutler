@@ -63,7 +63,7 @@ Complete history tracking with instant rollback capability
 
 ### 🏗️ Architecture
 
-```mermaid
+```
 ┌─────────────┐     ┌──────────────┐     ┌─────────────────┐
 │   React UI  │ ←──→│  Tauri/Rust  │ ←──→│  Flask API      │
 │  (Frontend) │     │  (Desktop)   │     │  (Python 3)     │
