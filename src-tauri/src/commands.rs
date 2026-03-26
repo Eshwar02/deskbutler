@@ -131,3 +131,27 @@ pub async fn save_settings(settings: serde_json::Value) -> Result<String, String
 pub async fn check_backend() -> Result<String, String> {
     api_get("/health").await
 }
+
+#[tauri::command]
+pub async fn check_ollama() -> Result<String, String> {
+    api_get("/ollama/status").await
+}
+
+#[tauri::command]
+pub async fn pull_ollama_model(model: Option<String>) -> Result<String, String> {
+    let body = match model {
+        Some(m) => serde_json::json!({ "model": m }),
+        None => serde_json::json!({}),
+    };
+    api_post("/ollama/pull", body).await
+}
+
+#[tauri::command]
+pub async fn parse_rule_prompt(prompt: String) -> Result<String, String> {
+    api_post("/rules/parse-prompt", serde_json::json!({ "prompt": prompt })).await
+}
+
+#[tauri::command]
+pub async fn get_paths() -> Result<String, String> {
+    api_get("/paths").await
+}

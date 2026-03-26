@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getWatchedFolders, addWatchedFolder, removeWatchedFolder } from "../utils/tauri";
+import { getWatchedFolders, addWatchedFolder, removeWatchedFolder, isTauri } from "../utils/tauri";
 
 export default function FolderWatcher() {
   const [folders, setFolders] = useState([]);
@@ -34,6 +34,14 @@ export default function FolderWatcher() {
     }
   };
 
+  const handleBrowse = async () => {
+    try {
+      const { open } = await import("@tauri-apps/api/dialog");
+      const selected = await open({ directory: true, multiple: false, title: "Choose a folder to watch" });
+      if (selected) setNewPath(selected);
+    } catch { /* dialog not available */ }
+  };
+
   const handleRemove = async (path) => {
     try {
       await removeWatchedFolder(path);
@@ -43,43 +51,49 @@ export default function FolderWatcher() {
     }
   };
 
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter") handleAdd();
-  };
-
   return (
     <div className="page">
-      <h1>Watched Folders</h1>
-      <p className="subtitle">DeskButler keeps an eye on these folders for you.</p>
+      <div className="page-header">
+        <h1>Watched Folders</h1>
+        <p className="subtitle">DeskButler keeps an eye on these folders for you.</p>
+      </div>
 
-      {error && <div className="error-banner">{error}</div>}
+      {error && <div className="banner banner-error">{error}</div>}
 
-      <div className="input-row">
+      <div className="input-group" style={{ marginBottom: "var(--space-lg)", maxWidth: 600 }}>
         <input
-          type="text"
+          className="input"
           placeholder="Folder path, e.g. C:\Users\you\Desktop"
           value={newPath}
           onChange={(e) => setNewPath(e.target.value)}
-          onKeyDown={handleKeyDown}
+          onKeyDown={(e) => e.key === "Enter" && handleAdd()}
         />
+        {isTauri() && (
+          <button className="btn btn-secondary" onClick={handleBrowse}>Browse</button>
+        )}
         <button className="btn btn-primary" onClick={handleAdd} disabled={adding}>
           {adding ? "Adding..." : "Add"}
         </button>
       </div>
 
-      <ul className="folder-list">
-        {folders.map((f) => (
-          <li key={f.path} className="folder-item">
-            <span>{f.path}</span>
-            <button className="btn btn-small btn-danger" onClick={() => handleRemove(f.path)}>
-              Remove
-            </button>
-          </li>
-        ))}
-      </ul>
-
-      {folders.length === 0 && !error && (
-        <p className="muted">No folders watched yet. Add one above to get started.</p>
+      {folders.length > 0 ? (
+        <ul className="list">
+          {folders.map((f) => (
+            <li key={f.path} className="list-item">
+              <div className="list-item-info">
+                <span className="list-item-title">{f.path}</span>
+              </div>
+              <div className="list-item-actions">
+                <button className="btn btn-danger btn-sm" onClick={() => handleRemove(f.path)}>Remove</button>
+              </div>
+            </li>
+          ))}
+        </ul>
+      ) : !error && (
+        <div className="empty-state">
+          <div className="empty-state-icon">◫</div>
+          <p>No folders watched yet. Add one above to get started.</p>
+        </div>
       )}
     </div>
   );

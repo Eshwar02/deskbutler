@@ -28,28 +28,38 @@ export default function History() {
 
   return (
     <div className="page">
-      <h1>History</h1>
-      <p className="subtitle">Everything DeskButler has moved, with undo.</p>
+      <div className="page-header">
+        <h1>History</h1>
+        <p className="subtitle">Everything DeskButler has moved, with undo.</p>
+      </div>
 
-      {error && <div className="error-banner">{error}</div>}
+      {error && <div className="banner banner-error">{error}</div>}
 
       {history.length === 0 && !error ? (
-        <p className="muted">Nothing moved yet.</p>
+        <div className="empty-state">
+          <span style={{ fontSize: "2rem" }}>📋</span>
+          <p>Nothing moved yet.</p>
+        </div>
       ) : (
-        <ul className="history-list">
+        <ul className="list">
           {history.map((h) => (
-            <li key={h.id} className={"history-item" + (h.undone ? " undone" : "")}>
-              <div className="history-info">
-                <strong>{h.filename}</strong>
-                <span className="muted"> — {h.moved_at}</span>
-                <div className="history-paths">
+            <li key={h.id} className={`list-item ${h.undone ? "undone" : ""}`}>
+              <div className="list-item-info">
+                <span className="list-item-title">{h.filename}</span>
+                <div className="list-item-meta">
                   {h.from_path} → {h.to_path}
                 </div>
+                <span className="badge badge-muted">{h.moved_at}</span>
               </div>
-              {!h.undone && (
-                <button className="btn btn-small" onClick={() => handleUndo(h.id)}>Undo</button>
-              )}
-              {h.undone && <span className="badge-undone">Undone</span>}
+              <div className="list-item-actions">
+                {!h.undone ? (
+                  <button className="btn btn-ghost btn-sm" onClick={() => handleUndo(h.id)}>
+                    Undo
+                  </button>
+                ) : (
+                  <span className="badge badge-muted">Undone</span>
+                )}
+              </div>
             </li>
           ))}
         </ul>

@@ -3,9 +3,27 @@
 import sqlite3
 import uuid
 import os
+import sys
+import platform
 from datetime import datetime
 
-DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "deskbutler.db")
+
+def _get_app_data_dir():
+    """Return a persistent app-data directory (survives PyInstaller restarts)."""
+    system = platform.system()
+    if system == "Windows":
+        base = os.environ.get("APPDATA", os.path.expanduser("~"))
+        return os.path.join(base, "DeskButler")
+    elif system == "Darwin":
+        return os.path.join(os.path.expanduser("~"), "Library", "Application Support", "DeskButler")
+    else:
+        return os.path.join(os.environ.get("XDG_DATA_HOME", os.path.expanduser("~/.local/share")), "DeskButler")
+
+
+APP_DATA_DIR = _get_app_data_dir()
+os.makedirs(APP_DATA_DIR, exist_ok=True)
+DB_PATH = os.path.join(APP_DATA_DIR, "deskbutler.db")
+LOG_PATH = os.path.join(APP_DATA_DIR, "deskbutler.log")
 
 
 class HistoryDB:

@@ -4,11 +4,11 @@ import uuid
 import os
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-from history import HistoryDB
+from history import HistoryDB, APP_DATA_DIR, DB_PATH, LOG_PATH
 from organizer import move_file, undo_file_move
 from rules import RuleEngine
 from analyzer import analyze_file
-from classifier import classify
+from classifier import classify, get_ollama_status, pull_model, parse_rule_prompt
 from watcher import start_watching, add_folder as watch_add_folder
 
 app = Flask(__name__)
@@ -35,7 +35,8 @@ def _on_new_file(path):
         reason = "Matched your rule"
         confidence = 1.0
     else:
-        result = classify(meta)
+        model = db.get_setting("ollama_model", "llama3.2")
+        result = classify(meta, model=model)
         category = result["category"]
         confidence = result["confidence"]
         if category == "Other":
@@ -79,6 +80,15 @@ def register_watcher(database=None):
 @app.route("/health", methods=["GET"])
 def health():
     return jsonify({"status": "ok"})
+
+
+@app.route("/paths", methods=["GET"])
+def get_paths():
+    return jsonify({
+        "app_data_dir": APP_DATA_DIR,
+        "database": DB_PATH,
+        "log_file": LOG_PATH,
+    })
 
 
 @app.route("/suggestions", methods=["GET"])
@@ -163,6 +173,31 @@ def add_rule_route():
 def delete_rule_route():
     rule_engine.delete_rule(request.json.get("id"))
     return jsonify({"ok": True})
+
+
+@app.route("/ollama/status", methods=["GET"])
+def ollama_status():
+    model = db.get_setting("ollama_model", "llama3.2")
+    return jsonify(get_ollama_status(model))
+
+
+@app.route("/ollama/pull", methods=["POST"])
+def ollama_pull():
+    model = request.json.get("model") or db.get_setting("ollama_model", "llama3.2")
+    result = pull_model(model)
+    if result.get("ok"):
+        return jsonify(result)
+    return jsonify(result), 500
+
+
+@app.route("/rules/parse-prompt", methods=["POST"])
+def parse_rule_route():
+    prompt = request.json.get("prompt", "")
+    if not prompt.strip():
+        return jsonify({"ok": False, "error": "Empty prompt"}), 400
+    model = db.get_setting("ollama_model", "llama3.2")
+    result = parse_rule_prompt(prompt, model=model)
+    return jsonify(result)
 
 
 @app.route("/settings", methods=["GET"])

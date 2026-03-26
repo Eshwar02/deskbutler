@@ -29,6 +29,10 @@ fn main() {
             commands::get_settings,
             commands::save_settings,
             commands::check_backend,
+            commands::check_ollama,
+            commands::pull_ollama_model,
+            commands::parse_rule_prompt,
+            commands::get_paths,
         ])
         .setup(|app| {
             // Spawn Python sidecar

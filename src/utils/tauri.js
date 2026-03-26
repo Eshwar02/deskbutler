@@ -6,14 +6,13 @@
 
 const API_BASE = "http://127.0.0.1:7342";
 
-const isTauri = () => Boolean(window.__TAURI__);
+export const isTauri = () => Boolean(window.__TAURI__);
 
 async function tauriInvoke(command, args) {
   if (isTauri()) {
     const { invoke } = await import("@tauri-apps/api/tauri");
     return invoke(command, args);
   }
-  // Browser fallback — map command names to API calls
   return apiFallback(command, args);
 }
 
@@ -37,6 +36,10 @@ async function apiFallback(command, args = {}) {
     delete_rule: () => post("/rules/delete", { id: args.id }),
     get_settings: () => get("/settings"),
     save_settings: () => post("/settings", args),
+    check_ollama: () => get("/ollama/status"),
+    pull_ollama_model: () => post("/ollama/pull", { model: args.model }),
+    parse_rule_prompt: () => post("/rules/parse-prompt", { prompt: args.prompt }),
+    get_paths: () => get("/paths"),
   };
 
   const handler = map[command];
@@ -58,6 +61,39 @@ async function post(path, body) {
   });
   if (!res.ok) throw new Error(`API error: ${res.status}`);
   return res.json();
+}
+
+// --- Backend readiness ---
+
+export async function waitForBackend(maxRetries = 20) {
+  for (let i = 0; i < maxRetries; i++) {
+    try {
+      if (isTauri()) {
+        const { invoke } = await import("@tauri-apps/api/tauri");
+        await invoke("check_backend");
+      } else {
+        await get("/health");
+      }
+      return true;
+    } catch {
+      const delay = Math.min(500 + i * 150, 2000);
+      await new Promise((r) => setTimeout(r, delay));
+    }
+  }
+  return false;
+}
+
+// --- Notifications ---
+
+export function notify(title, body) {
+  if (!("Notification" in window)) return;
+  if (Notification.permission === "granted") {
+    new Notification(title, { body });
+  } else if (Notification.permission !== "denied") {
+    Notification.requestPermission().then((perm) => {
+      if (perm === "granted") new Notification(title, { body });
+    });
+  }
 }
 
 // --- Public API ---
@@ -112,4 +148,20 @@ export async function getSettings() {
 
 export async function saveSettings(settings) {
   return tauriInvoke("save_settings", settings);
+}
+
+export async function checkOllamaStatus() {
+  return tauriInvoke("check_ollama");
+}
+
+export async function pullOllamaModel(model) {
+  return tauriInvoke("pull_ollama_model", { model });
+}
+
+export async function parseRulePrompt(prompt) {
+  return tauriInvoke("parse_rule_prompt", { prompt });
+}
+
+export async function getPaths() {
+  return tauriInvoke("get_paths");
 }
