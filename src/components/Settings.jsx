@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { getSettings, saveSettings, checkOllamaStatus, pullOllamaModel, getPaths } from "../utils/tauri";
-import { Settings as SettingsIcon, Download, Check, Server, Bell, Power, Database, FileText } from "lucide-react";
+import { Settings as SettingsIcon, Download, Check, Server, Bell, Power, Database, FileText, Play, RefreshCw } from "lucide-react";
 
 export default function Settings() {
   const [startOnBoot, setStartOnBoot] = useState(false);
@@ -11,6 +11,7 @@ export default function Settings() {
 
   const [ollamaStatus, setOllamaStatus] = useState(null);
   const [pulling, setPulling] = useState(false);
+  const [starting, setStarting] = useState(false);
   const [paths, setPaths] = useState(null);
 
   const loadOllamaStatus = () => {
@@ -62,6 +63,41 @@ export default function Settings() {
     }
   };
 
+  const handleStartOllama = async () => {
+    setStarting(true);
+    setError(null);
+    try {
+      // Try to start Ollama using system command
+      const { Command } = await import("@tauri-apps/api/shell");
+      
+      // Detect platform and start Ollama
+      const platform = navigator.platform.toLowerCase();
+      
+      if (platform.includes("win")) {
+        // Windows: Try to start Ollama via command
+        await new Command("powershell", ["-Command", "Start-Process", "ollama", "serve", "-WindowStyle", "Hidden"]).execute();
+      } else if (platform.includes("mac")) {
+        // macOS: Start Ollama in background
+        await new Command("sh", ["-c", "nohup ollama serve > /dev/null 2>&1 &"]).execute();
+      } else {
+        // Linux: Start Ollama in background
+        await new Command("sh", ["-c", "nohup ollama serve > /dev/null 2>&1 &"]).execute();
+      }
+      
+      // Wait a bit for Ollama to start
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      // Check status again
+      loadOllamaStatus();
+      
+    } catch (err) {
+      console.error("Failed to start Ollama:", err);
+      setError("Failed to start Ollama. Please start it manually or ensure it's installed.");
+    } finally {
+      setStarting(false);
+    }
+  };
+
   return (
     <div className="page">
       <div className="page-header">
@@ -94,6 +130,37 @@ export default function Settings() {
                 {ollamaStatus?.running ? "Running" : "Offline"}
               </div>
             </div>
+
+            {!ollamaStatus?.running && (
+              <div className="status-item" style={{ gridColumn: "1 / -1" }}>
+                <button 
+                  className="btn btn-primary" 
+                  onClick={handleStartOllama} 
+                  disabled={starting}
+                  style={{ width: "100%", gap: "8px" }}
+                >
+                  {starting ? (
+                    <>
+                      <RefreshCw size={16} className="spinning" />
+                      Starting Ollama...
+                    </>
+                  ) : (
+                    <>
+                      <Play size={16} />
+                      Start Ollama Server
+                    </>
+                  )}
+                </button>
+                <p style={{ 
+                  fontSize: "0.85rem", 
+                  color: "var(--color-text-tertiary)", 
+                  marginTop: "8px",
+                  textAlign: "center"
+                }}>
+                  Ollama must be running to use AI features
+                </p>
+              </div>
+            )}
 
             {ollamaStatus?.running && (
               <>

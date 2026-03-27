@@ -248,3 +248,12 @@ def disable_autolaunch_route():
             return jsonify(result), 500
     except Exception as e:
         return jsonify({"ok": False, "error": str(e)}), 500
+
+
+if __name__ == "__main__":
+    print("Starting DeskButler backend server...")
+    print(f"Database: {DB_PATH}")
+    print(f"Log: {LOG_PATH}")
+    register_watcher()
+    print("Server listening on http://127.0.0.1:7342")
+    app.run(host="127.0.0.1", port=7342, debug=False)
