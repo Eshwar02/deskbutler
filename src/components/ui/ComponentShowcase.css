@@ -1,0 +1,65 @@
+.showcase {
+  padding: var(--space-2xl);
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.showcase__header {
+  margin-bottom: var(--space-2xl);
+  text-align: center;
+}
+
+.showcase__header h1 {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: var(--space-md);
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.showcase__header p {
+  color: var(--text-secondary);
+  font-size: 16px;
+}
+
+.showcase__grid {
+  display: grid;
+  gap: var(--space-xl);
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+}
+
+.showcase__section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.showcase__section h3 {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: var(--space-sm);
+}
+
+.showcase__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+  align-items: center;
+}
+
+.showcase__column {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+/* Make the showcase itself scrollable */
+.showcase {
+  min-height: 100vh;
+  overflow-y: auto;
+}

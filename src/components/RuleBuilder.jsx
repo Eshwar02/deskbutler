@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
 import { getRules, addRule, deleteRule, parseRulePrompt, checkOllamaStatus } from "../utils/tauri";
+import { Sparkles, GripVertical, Trash2, Edit3, ArrowRight, Plus, Loader } from "lucide-react";
 
 export default function RuleBuilder() {
   const [rules, setRules] = useState([]);
   const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(false);
 
   // NLP mode
   const [prompt, setPrompt] = useState("");
@@ -61,6 +63,8 @@ export default function RuleBuilder() {
       await addRule(parsed.name, parsed.condition, parsed.destination);
       setParsed(null);
       setPrompt("");
+      setSuccess(true);
+      setTimeout(() => setSuccess(false), 2000);
       await load();
     } catch {
       setError("Failed to add rule.");
@@ -75,6 +79,8 @@ export default function RuleBuilder() {
       setName("");
       setCondition("");
       setDestination("");
+      setSuccess(true);
+      setTimeout(() => setSuccess(false), 2000);
       await load();
     } catch {
       setError("Failed to add rule.");
@@ -100,89 +106,200 @@ export default function RuleBuilder() {
       </div>
 
       {error && <div className="banner banner-error">{error}</div>}
+      {success && <div className="banner banner-success">Rule created successfully! ✨</div>}
 
-      {!showManual ? (
-        <div className="form-stack">
-          <div className="input-group">
-            <input
-              className="input"
-              placeholder='Describe your rule, e.g. "move all PDFs to Documents"'
-              value={prompt}
-              onChange={(e) => setPrompt(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && handleParsePrompt()}
-            />
-            <button className="btn btn-primary" onClick={handleParsePrompt} disabled={parsing}>
-              {parsing ? (
-                <><span className="spinner" style={{ width: 14, height: 14 }} /> Parsing</>
-              ) : "Parse"}
-            </button>
+      <div className="rule-builder-layout">
+        {/* Left: Rules List */}
+        <div className="rules-list-panel">
+          <div className="panel-header">
+            <h3>Active Rules</h3>
+            <span className="badge">{rules.length}</span>
           </div>
 
-          {parsed && (
-            <div className="preview-card">
-              <div className="preview-title">Parsed Rule</div>
-              <div className="input-with-label" style={{ marginBottom: 8 }}>
-                <span className="input-label">Name</span>
-                <input className="input" value={parsed.name} onChange={(e) => setParsed({ ...parsed, name: e.target.value })} />
-              </div>
-              <div className="input-with-label" style={{ marginBottom: 8 }}>
-                <span className="input-label">Pattern</span>
-                <input className="input" value={parsed.condition} onChange={(e) => setParsed({ ...parsed, condition: e.target.value })} />
-              </div>
-              <div className="input-with-label" style={{ marginBottom: 12 }}>
-                <span className="input-label">Destination</span>
-                <input className="input" value={parsed.destination} onChange={(e) => setParsed({ ...parsed, destination: e.target.value })} />
-              </div>
-              <div style={{ display: "flex", gap: 8 }}>
-                <button className="btn btn-success" onClick={handleConfirmParsed}>Confirm</button>
-                <button className="btn btn-ghost btn-sm" onClick={() => setParsed(null)}>Cancel</button>
-              </div>
+          {rules.length > 0 ? (
+            <div className="rules-grid">
+              {rules.map((r, i) => (
+                <div 
+                  key={r.id} 
+                  className="rule-glass-card"
+                  style={{ 
+                    animation: `ruleCardIn 0.3s ease-out both`,
+                    animationDelay: `${i * 0.05}s`
+                  }}
+                >
+                  <div className="rule-card-header">
+                    <div className="rule-drag-handle" title="Drag to reorder">
+                      <GripVertical size={16} style={{ opacity: 0.3 }} />
+                    </div>
+                    <div className="rule-card-title">{r.name}</div>
+                    <div className="rule-card-actions">
+                      <button 
+                        className="btn-icon-small" 
+                        onClick={() => handleDelete(r.id)}
+                        title="Delete rule"
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    </div>
+                  </div>
+                  <div className="rule-card-condition">
+                    <code>{r.condition}</code>
+                  </div>
+                  <div className="rule-card-arrow">
+                    <ArrowRight size={14} style={{ opacity: 0.4 }} />
+                  </div>
+                  <div className="rule-card-destination">
+                    {r.destination}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="empty-state-mini">
+              <Sparkles size={32} style={{ opacity: 0.2, marginBottom: "8px" }} />
+              <p style={{ fontSize: "0.85rem", color: "var(--text-tertiary)" }}>
+                No rules yet. Create one to get started.
+              </p>
             </div>
           )}
-
-          <button className="btn btn-ghost btn-sm" style={{ alignSelf: "flex-start" }} onClick={() => setManualMode(true)}>
-            Manual mode
-          </button>
         </div>
-      ) : (
-        <div className="form-stack">
-          <input className="input" placeholder="Rule name, e.g. PDFs to Documents" value={name} onChange={(e) => setName(e.target.value)} />
-          <input className="input" placeholder="When file matches, e.g. *.pdf" value={condition} onChange={(e) => setCondition(e.target.value)} />
-          <input className="input" placeholder="Move to folder, e.g. C:\Documents\PDFs" value={destination} onChange={(e) => setDestination(e.target.value)} />
-          <div style={{ display: "flex", gap: 8 }}>
-            <button className="btn btn-primary" onClick={handleManualAdd}>Add Rule</button>
+
+        {/* Right: Create Form */}
+        <div className="rule-create-panel">
+          <div className="panel-header">
+            <h3>{showManual ? "Manual Entry" : "AI Parser"}</h3>
             {ollamaAvailable && (
-              <button className="btn btn-ghost btn-sm" onClick={() => setManualMode(false)}>NLP mode</button>
+              <button 
+                className="btn btn-ghost btn-sm" 
+                onClick={() => setManualMode(!manualMode)}
+              >
+                {showManual ? "AI Mode" : "Manual"}
+              </button>
             )}
           </div>
-        </div>
-      )}
 
-      {rules.length > 0 && (
-        <div className="section">
-          <p className="section-title">Active Rules</p>
-          <ul className="list">
-            {rules.map((r) => (
-              <li key={r.id} className="list-item">
-                <div className="list-item-info">
-                  <span className="list-item-title">{r.name}</span>
-                  <div className="list-item-meta">{r.condition} → {r.destination}</div>
-                </div>
-                <div className="list-item-actions">
-                  <button className="btn btn-danger btn-sm" onClick={() => handleDelete(r.id)}>Delete</button>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+          {!showManual ? (
+            <div className="create-form">
+              <div className="ai-input-group">
+                <Sparkles size={18} style={{ color: "var(--accent)", opacity: 0.8 }} />
+                <input
+                  className="input-ai"
+                  placeholder='e.g. "Move all PDFs to Documents folder"'
+                  value={prompt}
+                  onChange={(e) => setPrompt(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleParsePrompt()}
+                  disabled={parsing}
+                />
+              </div>
+              
+              <button 
+                className="btn btn-primary" 
+                onClick={handleParsePrompt} 
+                disabled={parsing || !prompt.trim()}
+                style={{ width: "100%" }}
+              >
+                {parsing ? (
+                  <>
+                    <Loader size={16} className="spinning" />
+                    Parsing with AI...
+                  </>
+                ) : (
+                  <>
+                    <Sparkles size={16} />
+                    Parse Rule
+                  </>
+                )}
+              </button>
 
-      {rules.length === 0 && !error && (
-        <div className="empty-state">
-          <div className="empty-state-icon">⚡</div>
-          <p>No rules yet. Add one above to teach DeskButler your preferences.</p>
+              {parsed && (
+                <div className="parsed-preview">
+                  <div className="preview-header">
+                    <span>Parsed Rule</span>
+                    <button 
+                      className="btn-icon-small" 
+                      onClick={() => setParsed(null)}
+                      title="Discard"
+                    >
+                      ×
+                    </button>
+                  </div>
+                  <div className="input-with-label">
+                    <span className="input-label">Name</span>
+                    <input 
+                      className="input" 
+                      value={parsed.name} 
+                      onChange={(e) => setParsed({ ...parsed, name: e.target.value })} 
+                    />
+                  </div>
+                  <div className="input-with-label">
+                    <span className="input-label">Pattern</span>
+                    <input 
+                      className="input" 
+                      value={parsed.condition} 
+                      onChange={(e) => setParsed({ ...parsed, condition: e.target.value })} 
+                    />
+                  </div>
+                  <div className="input-with-label">
+                    <span className="input-label">Destination</span>
+                    <input 
+                      className="input" 
+                      value={parsed.destination} 
+                      onChange={(e) => setParsed({ ...parsed, destination: e.target.value })} 
+                    />
+                  </div>
+                  <button 
+                    className="btn btn-success" 
+                    onClick={handleConfirmParsed}
+                    style={{ width: "100%" }}
+                  >
+                    <Plus size={16} />
+                    Create Rule
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="create-form">
+              <div className="input-with-label">
+                <span className="input-label">Rule Name</span>
+                <input 
+                  className="input" 
+                  placeholder="e.g. PDFs to Documents" 
+                  value={name} 
+                  onChange={(e) => setName(e.target.value)} 
+                />
+              </div>
+              <div className="input-with-label">
+                <span className="input-label">File Pattern</span>
+                <input 
+                  className="input" 
+                  placeholder="e.g. *.pdf" 
+                  value={condition} 
+                  onChange={(e) => setCondition(e.target.value)} 
+                />
+              </div>
+              <div className="input-with-label">
+                <span className="input-label">Destination Folder</span>
+                <input 
+                  className="input" 
+                  placeholder="e.g. C:\Documents\PDFs" 
+                  value={destination} 
+                  onChange={(e) => setDestination(e.target.value)} 
+                />
+              </div>
+              <button 
+                className="btn btn-primary" 
+                onClick={handleManualAdd}
+                disabled={!name.trim() || !condition.trim() || !destination.trim()}
+                style={{ width: "100%" }}
+              >
+                <Plus size={16} />
+                Add Rule
+              </button>
+            </div>
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
 }

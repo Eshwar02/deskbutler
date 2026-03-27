@@ -1,0 +1,97 @@
+.ui-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-md);
+  cursor: pointer;
+  user-select: none;
+}
+
+.ui-toggle--label-left {
+  flex-direction: row;
+}
+
+.ui-toggle--label-right {
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+}
+
+.ui-toggle--disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.ui-toggle__label {
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.ui-toggle__wrapper {
+  position: relative;
+}
+
+.ui-toggle__input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.ui-toggle__track {
+  position: relative;
+  width: 48px;
+  height: 28px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  transition: all var(--duration-normal) var(--ease);
+}
+
+.ui-toggle__thumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 20px;
+  height: 20px;
+  background: var(--text-secondary);
+  border-radius: 50%;
+  transition: all var(--duration-normal) cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Checked state */
+.ui-toggle__input:checked + .ui-toggle__track {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.ui-toggle__input:checked + .ui-toggle__track .ui-toggle__thumb {
+  left: 23px;
+  background: white;
+  transform: scale(1.1);
+}
+
+/* Focus state */
+.ui-toggle__input:focus-visible + .ui-toggle__track {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+}
+
+/* Hover state */
+.ui-toggle:not(.ui-toggle--disabled):hover .ui-toggle__track {
+  border-color: var(--accent);
+}
+
+.ui-toggle:not(.ui-toggle--disabled):hover .ui-toggle__thumb {
+  transform: scale(1.05);
+}
+
+.ui-toggle__input:checked + .ui-toggle__track:hover .ui-toggle__thumb {
+  transform: scale(1.15);
+}
+
+/* Active state - haptic feedback */
+.ui-toggle:not(.ui-toggle--disabled):active .ui-toggle__thumb {
+  transform: scale(0.95);
+  transition-duration: var(--duration-fast);
+}

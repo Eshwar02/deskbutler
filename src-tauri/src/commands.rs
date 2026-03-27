@@ -155,3 +155,18 @@ pub async fn parse_rule_prompt(prompt: String) -> Result<String, String> {
 pub async fn get_paths() -> Result<String, String> {
     api_get("/paths").await
 }
+
+#[tauri::command]
+pub async fn check_autolaunch() -> Result<String, String> {
+    api_get("/autolaunch/status").await
+}
+
+#[tauri::command]
+pub async fn enable_autolaunch() -> Result<String, String> {
+    api_post("/autolaunch/enable", serde_json::json!({})).await
+}
+
+#[tauri::command]
+pub async fn disable_autolaunch() -> Result<String, String> {
+    api_post("/autolaunch/disable", serde_json::json!({})).await
+}

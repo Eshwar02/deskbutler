@@ -1,0 +1,374 @@
+/* ═══════════════════════════════════════════════
+   DeskButler Design System — Variables
+   Premium dark and light themes inspired by Notion, Linear, Figma
+   ═══════════════════════════════════════════════ */
+
+:root {
+  /* ─────────────────────────────────────────────
+     Color System - Dark Theme (Default)
+     ───────────────────────────────────────────── */
+  
+  /* Base Surfaces — Deep grays with subtle warmth */
+  --color-bg-base: #0f1116;
+  --color-bg-elevated: #1a1d25;
+  --color-bg-overlay: #23262f;
+  --color-bg-surface: #1a1d25;
+  --color-bg-subtle: rgba(255, 255, 255, 0.02);
+  
+  /* Glassmorphism Surfaces */
+  --color-glass-light: rgba(24, 24, 34, 0.6);
+  --color-glass-medium: rgba(28, 28, 38, 0.65);
+  --color-glass-heavy: rgba(32, 32, 44, 0.75);
+  --color-glass-overlay: rgba(16, 16, 22, 0.85);
+  
+  /* Interactive States */
+  --color-hover: rgba(255, 255, 255, 0.04);
+  --color-hover-subtle: rgba(255, 255, 255, 0.02);
+  --color-active: rgba(255, 255, 255, 0.08);
+  --color-selected: rgba(138, 120, 255, 0.12);
+  --color-disabled: rgba(255, 255, 255, 0.08);
+  
+  /* Borders */
+  --color-border-subtle: rgba(255, 255, 255, 0.04);
+  --color-border-default: rgba(255, 255, 255, 0.08);
+  --color-border-medium: rgba(255, 255, 255, 0.12);
+  --color-border-strong: rgba(255, 255, 255, 0.16);
+  --color-border-focus: rgba(138, 120, 255, 0.5);
+  
+  /* Text Hierarchy */
+  --color-text-primary: #e4e5e9;
+  --color-text-secondary: #9ca0ab;
+  --color-text-tertiary: rgba(234, 234, 240, 0.4);
+  --color-text-quaternary: rgba(234, 234, 240, 0.25);
+  --color-text-disabled: rgba(234, 234, 240, 0.3);
+  --color-text-inverse: #ffffff;
+  --color-text-on-accent: #ffffff;
+  
+  /* Premium Accent — Vibrant purple */
+  --color-accent-primary: #6366f1;
+  --color-accent-hover: #818cf8;
+  --color-accent-active: #4f46e5;
+  --color-accent-subtle: rgba(99, 102, 241, 0.1);
+  --color-accent-muted: rgba(99, 102, 241, 0.2);
+  --color-accent-emphasis: rgba(99, 102, 241, 0.15);
+  --color-accent-glow: rgba(99, 102, 241, 0.25);
+  
+  /* Semantic Colors */
+  --color-success: #10b981;
+  --color-success-hover: #34d399;
+  --color-success-subtle: rgba(16, 185, 129, 0.1);
+  --color-success-emphasis: rgba(16, 185, 129, 0.15);
+  
+  --color-danger: #ef4444;
+  --color-danger-hover: #f87171;
+  --color-danger-subtle: rgba(239, 68, 68, 0.1);
+  --color-danger-emphasis: rgba(239, 68, 68, 0.15);
+  
+  --color-warning: #f59e0b;
+  --color-warning-hover: #fbbf24;
+  --color-warning-subtle: rgba(245, 158, 11, 0.1);
+  --color-warning-emphasis: rgba(245, 158, 11, 0.15);
+  
+  /* Smooth transitions for theme switching */
+  transition: background-color 200ms ease-in-out, 
+              color 200ms ease-in-out,
+              border-color 200ms ease-in-out;
+  
+  --color-info: #3b82f6;
+  --color-info-hover: #60a5fa;
+  --color-info-subtle: rgba(59, 130, 246, 0.1);
+  --color-info-emphasis: rgba(59, 130, 246, 0.15);
+  
+  /* Additional Accent Colors */
+  --color-accent-blue: #2563eb;
+  --color-accent-green: #059669;
+  --color-accent-pink: #ec4899;
+  --color-accent-orange: #f97316;
+  --color-accent-teal: #14b8a6;
+  
+  /* ─────────────────────────────────────────────
+     Typography System
+     ───────────────────────────────────────────── */
+  
+  /* Font Families */
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", 'Inter', 
+               Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: 'SF Mono', 'Cascadia Code', 'Fira Code', 'Consolas', 
+               'Monaco', monospace;
+  
+  /* Font Sizes */
+  --font-size-xs: 0.6875rem;    /* 11px */
+  --font-size-sm: 0.8125rem;    /* 13px */
+  --font-size-base: 0.875rem;   /* 14px */
+  --font-size-md: 0.9375rem;    /* 15px */
+  --font-size-lg: 1rem;         /* 16px */
+  --font-size-xl: 1.125rem;     /* 18px */
+  --font-size-2xl: 1.5rem;      /* 24px */
+  --font-size-3xl: 2rem;        /* 32px */
+  --font-size-4xl: 2.5rem;      /* 40px */
+  --font-size-5xl: 3rem;        /* 48px */
+  
+  /* Line Heights */
+  --line-height-tight: 1.2;
+  --line-height-snug: 1.4;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.625;
+  --line-height-loose: 1.75;
+  
+  /* Font Weights */
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  
+  /* Letter Spacing */
+  --letter-spacing-tight: -0.02em;
+  --letter-spacing-normal: 0;
+  --letter-spacing-wide: 0.02em;
+  --letter-spacing-wider: 0.05em;
+  
+  /* ─────────────────────────────────────────────
+     Spacing System (4px base)
+     ───────────────────────────────────────────── */
+  
+  --space-0: 0;
+  --space-1: 0.25rem;   /* 4px */
+  --space-2: 0.5rem;    /* 8px */
+  --space-3: 0.75rem;   /* 12px */
+  --space-4: 1rem;      /* 16px */
+  --space-5: 1.25rem;   /* 20px */
+  --space-6: 1.5rem;    /* 24px */
+  --space-8: 2rem;      /* 32px */
+  --space-10: 2.5rem;   /* 40px */
+  --space-12: 3rem;     /* 48px */
+  --space-16: 4rem;     /* 64px */
+  --space-20: 5rem;     /* 80px */
+  --space-24: 6rem;     /* 96px */
+  
+  /* ─────────────────────────────────────────────
+     Border Radius
+     ───────────────────────────────────────────── */
+  
+  --radius-xs: 0.25rem;   /* 4px */
+  --radius-sm: 0.5rem;    /* 8px */
+  --radius-md: 0.75rem;   /* 12px */
+  --radius-lg: 1rem;      /* 16px */
+  --radius-xl: 1.25rem;   /* 20px */
+  --radius-2xl: 1.5rem;   /* 24px */
+  --radius-full: 9999px;
+  
+  /* ─────────────────────────────────────────────
+     Shadows — Layered depth
+     ───────────────────────────────────────────── */
+  
+  /* Subtle Shadows */
+  --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.15);
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.2),
+               0 1px 2px -1px rgba(0, 0, 0, 0.2);
+  
+  /* Medium Shadows */
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.25),
+               0 2px 4px -2px rgba(0, 0, 0, 0.2);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.3),
+               0 4px 6px -4px rgba(0, 0, 0, 0.2);
+  
+  /* Large Shadows */
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.35),
+               0 8px 10px -6px rgba(0, 0, 0, 0.25);
+  --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.45);
+  
+  /* Special Shadows */
+  --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.15);
+  --shadow-outline: 0 0 0 3px var(--color-accent-subtle);
+  --shadow-glow: 0 0 20px -5px var(--color-accent-glow);
+  --shadow-glow-strong: 0 0 30px -5px var(--color-accent-muted),
+                        0 0 15px -3px var(--color-accent-glow);
+  
+  /* ─────────────────────────────────────────────
+     Transitions & Easing
+     ───────────────────────────────────────────── */
+  
+  /* Durations */
+  --duration-instant: 100ms;
+  --duration-fast: 150ms;
+  --duration-normal: 200ms;
+  --duration-medium: 250ms;
+  --duration-slow: 300ms;
+  --duration-slower: 400ms;
+  --duration-slowest: 500ms;
+  
+  /* Easing Curves */
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-linear: linear;
+  
+  /* Premium Curves (Apple-style) */
+  --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  --ease-smooth: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --ease-emphasized: cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* Shorthand Transitions */
+  --transition-fast: all var(--duration-fast) var(--ease-out);
+  --transition-normal: all var(--duration-normal) var(--ease-in-out);
+  --transition-medium: all var(--duration-medium) var(--ease-in-out);
+  --transition-slow: all var(--duration-slow) var(--ease-in-out);
+  --transition-spring: all var(--duration-medium) var(--ease-spring);
+  
+  /* ─────────────────────────────────────────────
+     Z-Index Scale
+     ───────────────────────────────────────────── */
+  
+  --z-base: 0;
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-fixed: 300;
+  --z-overlay: 400;
+  --z-modal: 500;
+  --z-popover: 600;
+  --z-tooltip: 700;
+  --z-toast: 800;
+  --z-max: 999;
+  
+  /* ─────────────────────────────────────────────
+     Backdrop Blur
+     ───────────────────────────────────────────── */
+  
+  --blur-sm: blur(4px);
+  --blur-md: blur(8px);
+  --blur-lg: blur(12px);
+  --blur-xl: blur(16px);
+  --blur-2xl: blur(24px);
+  --blur-3xl: blur(32px);
+  
+  /* ─────────────────────────────────────────────
+     Sizing
+     ───────────────────────────────────────────── */
+  
+  /* Component Heights */
+  --height-input: 2.5rem;      /* 40px */
+  --height-button: 2.5rem;     /* 40px */
+  --height-button-sm: 2rem;    /* 32px */
+  --height-button-lg: 3rem;    /* 48px */
+  --height-header: 3.5rem;     /* 56px */
+  --height-toolbar: 3rem;      /* 48px */
+  
+  /* Widths */
+  --width-sidebar: 16rem;      /* 256px */
+  --width-sidebar-collapsed: 4rem;  /* 64px */
+  --width-panel: 20rem;        /* 320px */
+  --width-modal-sm: 28rem;     /* 448px */
+  --width-modal-md: 36rem;     /* 576px */
+  --width-modal-lg: 48rem;     /* 768px */
+  
+  /* ─────────────────────────────────────────────
+     Opacity
+     ───────────────────────────────────────────── */
+  
+  --opacity-disabled: 0.4;
+  --opacity-muted: 0.6;
+  --opacity-normal: 1;
+  
+  /* ─────────────────────────────────────────────
+     Misc
+     ───────────────────────────────────────────── */
+  
+  --icon-size-sm: 1rem;    /* 16px */
+  --icon-size-md: 1.25rem; /* 20px */
+  --icon-size-lg: 1.5rem;  /* 24px */
+  --icon-size-xl: 2rem;    /* 32px */
+}
+
+/* ═══════════════════════════════════════════════
+   Light Theme
+   ═══════════════════════════════════════════════ */
+
+[data-theme="light"] {
+  /* Base Surfaces */
+  --color-bg-base: #ffffff;
+  --color-bg-elevated: #f8f9fa;
+  --color-bg-overlay: #e9ecef;
+  --color-bg-surface: #f8f9fa;
+  --color-bg-subtle: rgba(0, 0, 0, 0.02);
+  
+  /* Glassmorphism Surfaces */
+  --color-glass-light: rgba(248, 249, 250, 0.6);
+  --color-glass-medium: rgba(248, 249, 250, 0.65);
+  --color-glass-heavy: rgba(248, 249, 250, 0.75);
+  --color-glass-overlay: rgba(255, 255, 255, 0.85);
+  
+  /* Interactive States */
+  --color-hover: rgba(0, 0, 0, 0.04);
+  --color-hover-subtle: rgba(0, 0, 0, 0.02);
+  --color-active: rgba(0, 0, 0, 0.08);
+  --color-selected: rgba(79, 70, 229, 0.12);
+  --color-disabled: rgba(0, 0, 0, 0.08);
+  
+  /* Borders */
+  --color-border-subtle: rgba(0, 0, 0, 0.06);
+  --color-border-default: rgba(0, 0, 0, 0.1);
+  --color-border-medium: rgba(0, 0, 0, 0.15);
+  --color-border-strong: rgba(0, 0, 0, 0.2);
+  --color-border-focus: rgba(79, 70, 229, 0.5);
+  
+  /* Text Hierarchy */
+  --color-text-primary: #1a1d25;
+  --color-text-secondary: #6c757d;
+  --color-text-tertiary: rgba(26, 29, 37, 0.5);
+  --color-text-quaternary: rgba(26, 29, 37, 0.35);
+  --color-text-disabled: rgba(26, 29, 37, 0.4);
+  --color-text-inverse: #ffffff;
+  --color-text-on-accent: #ffffff;
+  
+  /* Premium Accent */
+  --color-accent-primary: #4f46e5;
+  --color-accent-hover: #6366f1;
+  --color-accent-active: #4338ca;
+  --color-accent-subtle: rgba(79, 70, 229, 0.1);
+  --color-accent-muted: rgba(79, 70, 229, 0.2);
+  --color-accent-emphasis: rgba(79, 70, 229, 0.15);
+  --color-accent-glow: rgba(79, 70, 229, 0.25);
+  
+  /* Semantic Colors */
+  --color-success: #059669;
+  --color-success-hover: #10b981;
+  --color-success-subtle: rgba(5, 150, 105, 0.1);
+  --color-success-emphasis: rgba(5, 150, 105, 0.15);
+  
+  --color-danger: #dc2626;
+  --color-danger-hover: #ef4444;
+  --color-danger-subtle: rgba(220, 38, 38, 0.1);
+  --color-danger-emphasis: rgba(220, 38, 38, 0.15);
+  
+  --color-warning: #d97706;
+  --color-warning-hover: #f59e0b;
+  --color-warning-subtle: rgba(217, 119, 6, 0.1);
+  --color-warning-emphasis: rgba(217, 119, 6, 0.15);
+  
+  --color-info: #2563eb;
+  --color-info-hover: #3b82f6;
+  --color-info-subtle: rgba(37, 99, 235, 0.1);
+  --color-info-emphasis: rgba(37, 99, 235, 0.15);
+  
+  /* Shadows - Lighter for light theme */
+  --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1),
+               0 1px 2px -1px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+               0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+               0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+               0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+/* Smooth theme transitions for all elements */
+*,
+*::before,
+*::after {
+  transition: background-color 200ms ease-in-out,
+              color 200ms ease-in-out,
+              border-color 200ms ease-in-out,
+              box-shadow 200ms ease-in-out;
+}

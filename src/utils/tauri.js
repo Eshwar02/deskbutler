@@ -40,6 +40,9 @@ async function apiFallback(command, args = {}) {
     pull_ollama_model: () => post("/ollama/pull", { model: args.model }),
     parse_rule_prompt: () => post("/rules/parse-prompt", { prompt: args.prompt }),
     get_paths: () => get("/paths"),
+    check_autolaunch: () => get("/autolaunch/status"),
+    enable_autolaunch: () => post("/autolaunch/enable", {}),
+    disable_autolaunch: () => post("/autolaunch/disable", {}),
   };
 
   const handler = map[command];
@@ -164,4 +167,16 @@ export async function parseRulePrompt(prompt) {
 
 export async function getPaths() {
   return tauriInvoke("get_paths");
+}
+
+export async function checkAutolaunch() {
+  return tauriInvoke("check_autolaunch");
+}
+
+export async function enableAutolaunch() {
+  return tauriInvoke("enable_autolaunch");
+}
+
+export async function disableAutolaunch() {
+  return tauriInvoke("disable_autolaunch");
 }

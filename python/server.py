@@ -10,6 +10,7 @@ from rules import RuleEngine
 from analyzer import analyze_file
 from classifier import classify, get_ollama_status, pull_model, parse_rule_prompt
 from watcher import start_watching, add_folder as watch_add_folder
+from autolaunch import enable_autolaunch, disable_autolaunch, is_autolaunch_enabled
 
 app = Flask(__name__)
 CORS(app)
@@ -211,3 +212,39 @@ def save_settings():
     for key, value in data.items():
         db.set_setting(key, value)
     return jsonify({"ok": True})
+
+
+@app.route("/autolaunch/status", methods=["GET"])
+def autolaunch_status():
+    """Get the current autolaunch status."""
+    try:
+        enabled = is_autolaunch_enabled()
+        return jsonify({"enabled": enabled})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/autolaunch/enable", methods=["POST"])
+def enable_autolaunch_route():
+    """Enable autolaunch for the current platform."""
+    try:
+        result = enable_autolaunch()
+        if result.get("ok"):
+            return jsonify(result)
+        else:
+            return jsonify(result), 500
+    except Exception as e:
+        return jsonify({"ok": False, "error": str(e)}), 500
+
+
+@app.route("/autolaunch/disable", methods=["POST"])
+def disable_autolaunch_route():
+    """Disable autolaunch for the current platform."""
+    try:
+        result = disable_autolaunch()
+        if result.get("ok"):
+            return jsonify(result)
+        else:
+            return jsonify(result), 500
+    except Exception as e:
+        return jsonify({"ok": False, "error": str(e)}), 500

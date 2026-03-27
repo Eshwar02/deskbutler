@@ -1,0 +1,133 @@
+.ui-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  padding: var(--space-lg);
+  animation: fadeIn var(--duration-normal) var(--ease);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.ui-modal {
+  position: relative;
+  background: var(--bg-raised);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  animation: slideUp var(--duration-normal) var(--ease);
+  outline: none;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Sizes */
+.ui-modal--sm {
+  width: 100%;
+  max-width: 400px;
+}
+
+.ui-modal--md {
+  width: 100%;
+  max-width: 600px;
+}
+
+.ui-modal--lg {
+  width: 100%;
+  max-width: 800px;
+}
+
+.ui-modal--xl {
+  width: 100%;
+  max-width: 1200px;
+}
+
+/* Header */
+.ui-modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-xl);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.ui-modal__title {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text);
+  margin: 0;
+}
+
+.ui-modal__close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease);
+}
+
+.ui-modal__close:hover {
+  background: var(--bg-hover);
+  color: var(--text);
+}
+
+.ui-modal__close:active {
+  transform: scale(0.95);
+}
+
+/* Content */
+.ui-modal__content {
+  padding: var(--space-xl);
+  overflow-y: auto;
+  flex: 1;
+}
+
+/* Custom scrollbar */
+.ui-modal__content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.ui-modal__content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.ui-modal__content::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 4px;
+}
+
+.ui-modal__content::-webkit-scrollbar-thumb:hover {
+  background: var(--text-tertiary);
+}

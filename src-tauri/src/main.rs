@@ -33,6 +33,9 @@ fn main() {
             commands::pull_ollama_model,
             commands::parse_rule_prompt,
             commands::get_paths,
+            commands::check_autolaunch,
+            commands::enable_autolaunch,
+            commands::disable_autolaunch,
         ])
         .setup(|app| {
             // Spawn Python sidecar
